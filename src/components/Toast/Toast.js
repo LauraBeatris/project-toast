@@ -19,7 +19,12 @@ const ICONS_BY_VARIANT = {
 };
 
 function Toast({ variant, children }) {
+  const [isHidden, setIsHidden] = React.useState(false);
   const Icon = ICONS_BY_VARIANT[variant];
+
+  if (isHidden) {
+    return null;
+  }
 
   if (!Icon) {
     throw new Error("Invalid variant: ", variant);
@@ -31,7 +36,7 @@ function Toast({ variant, children }) {
         <Icon size={24} />
       </div>
       <p className={styles.content}>{children}</p>
-      <button className={styles.closeButton}>
+      <button className={styles.closeButton} onClick={() => setIsHidden(true)}>
         <X size={24} />
         <VisuallyHidden>Dismiss message</VisuallyHidden>
       </button>

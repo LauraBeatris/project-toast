@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import Button from "../Button";
 
-import Toast from "../Toast";
+import ToastShelf from "../ToastShelf";
 
 import styles from "./ToastPlayground.module.css";
 
@@ -11,6 +11,20 @@ const VARIANT_OPTIONS = ["notice", "warning", "success", "error"];
 function ToastPlayground() {
   const [message, setMessage] = useState("");
   const [variant, setVariant] = useState("notice");
+  const [toasts, setToasts] = useState([]);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    setToasts((prev) => [
+      ...prev,
+      {
+        id: crypto.randomUUID(),
+        message,
+        variant,
+      },
+    ]);
+  };
 
   return (
     <div className={styles.wrapper}>
@@ -19,9 +33,9 @@ function ToastPlayground() {
         <h1>Toast Playground</h1>
       </header>
 
-      <Toast variant={variant}>{message}</Toast>
+      <ToastShelf toasts={toasts} />
 
-      <div className={styles.controlsWrapper}>
+      <form className={styles.controlsWrapper} onSubmit={handleSubmit}>
         <div className={styles.row}>
           <label
             htmlFor="message"
@@ -67,7 +81,7 @@ function ToastPlayground() {
             <Button>Pop Toast!</Button>
           </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 }
