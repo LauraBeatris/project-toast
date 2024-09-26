@@ -10,6 +10,7 @@ import {
 import VisuallyHidden from "../VisuallyHidden";
 
 import styles from "./Toast.module.css";
+import { useEscapeKey } from "../../hooks/useEspaceKey";
 
 const ICONS_BY_VARIANT = {
   notice: Info,
@@ -21,19 +22,7 @@ const ICONS_BY_VARIANT = {
 function Toast({ variant, children, handleDismiss }) {
   const Icon = ICONS_BY_VARIANT[variant];
 
-  React.useEffect(() => {
-    function handleKeyDown(e) {
-      if (e.code === "Escape") {
-        handleDismiss();
-      }
-    }
-
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [handleDismiss]);
+  useEscapeKey(handleDismiss);
 
   if (!Icon) {
     throw new Error("Invalid variant: ", variant);
