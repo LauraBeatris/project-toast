@@ -21,6 +21,20 @@ const ICONS_BY_VARIANT = {
 function Toast({ variant, children, handleDismiss }) {
   const Icon = ICONS_BY_VARIANT[variant];
 
+  React.useEffect(() => {
+    function handleKeyDown(e) {
+      if (e.code === "Escape") {
+        handleDismiss();
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handleDismiss]);
+
   if (!Icon) {
     throw new Error("Invalid variant: ", variant);
   }
@@ -30,8 +44,30 @@ function Toast({ variant, children, handleDismiss }) {
       <div className={styles.iconContainer}>
         <Icon size={24} />
       </div>
-      <p className={styles.content}>{children}</p>
-      <button className={styles.closeButton} onClick={handleDismiss}>
+      <p className={styles.content}>
+        {(() => {
+          switch (variant) {
+            case "notice":
+              return <VisuallyHidden>Notice - </VisuallyHidden>;
+            case "warning":
+              return <VisuallyHidden>Warning - </VisuallyHidden>;
+            case "success":
+              return <VisuallyHidden>Success - </VisuallyHidden>;
+            case "error":
+              return <VisuallyHidden>Error - </VisuallyHidden>;
+            default:
+              return null;
+          }
+        })()}
+
+        {children}
+      </p>
+      <button
+        className={styles.closeButton}
+        onClick={handleDismiss}
+        aria-label="Dismiss message"
+        aria-live="off"
+      >
         <X size={24} />
         <VisuallyHidden>Dismiss message</VisuallyHidden>
       </button>
